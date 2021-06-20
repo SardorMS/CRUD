@@ -14,7 +14,7 @@ import (
 
 	"github.com/SardorMS/CRUD/cmd/app"
 	"github.com/SardorMS/CRUD/pkg/customers"
-	"github.com/SardorMS/CRUD/pkg/security"
+	"github.com/SardorMS/CRUD/pkg/managers"
 )
 
 func main() {
@@ -40,7 +40,7 @@ func execute(host string, port string, dsn string) (err error) {
 			return pgxpool.Connect(ctx, dsn)
 		},
 		customers.NewService,
-		security.NewService,
+		managers.NewService,
 		//managers.NewService,
 		//products.NewService,
 		//sales.NewService,

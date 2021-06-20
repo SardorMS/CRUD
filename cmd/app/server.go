@@ -9,7 +9,7 @@ import (
 
 	"github.com/SardorMS/CRUD/cmd/app/middleware"
 	"github.com/SardorMS/CRUD/pkg/customers"
-	"github.com/SardorMS/CRUD/pkg/security"
+	"github.com/SardorMS/CRUD/pkg/managers"
 	"github.com/SardorMS/CRUD/pkg/types"
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
@@ -25,15 +25,15 @@ const (
 type Server struct {
 	mux          *mux.Router
 	customersSvc *customers.Service
-	securitySvc  *security.Service
+	managersSvc  *managers.Service
 }
 
 // NewServer - constructor function to create a new server.
-func NewServer(mux *mux.Router, customersSvc *customers.Service, securitySvc *security.Service) *Server {
+func NewServer(mux *mux.Router, customersSvc *customers.Service, managersSvc *managers.Service) *Server {
 	return &Server{
 		mux:          mux,
 		customersSvc: customersSvc,
-		securitySvc:  securitySvc,
+		managersSvc:  managersSvc,
 	}
 }
 
@@ -50,20 +50,43 @@ func (s *Server) Init() {
 	// chMD := middleware.CheckHeader("Content-Type", "application/json")
 	// s.mux.Handle("customers", chMD(http.HandlerFunc(s.handleSaveCustomer))).Methods(POST)
 	// s.mux.Use(middleware.CheckHeader("Content-Type", "application/json"))
-
 	// s.mux.Use(middleware.Basic(s.securitySvc.Auth))
+
+	// s.mux.HandleFunc("/api/customers", s.handleSaveCustomer).Methods(POST)
+	// s.mux.HandleFunc("/api/customers/token", s.handleGenerateToken).Methods(POST)
+	// s.mux.HandleFunc("/api/customers/token/validate", s.handleValidateToken).Methods(POST)
+	// managersSubrouter.HandleFunc("/customers/active", s.handleGetAllActive).Methods(GET)
+	// managersSubrouter.HandleFunc("/customers/{id:[0-9]+}", s.handleGetCustomerByID).Methods(GET)
+	// managersSubrouter.HandleFunc("/customers/{id:[0-9]+}/block", s.handlePostBlock).Methods(POST)
+	// managersSubrouter.HandleFunc("/customers/{id:[0-9]+}/block", s.handleDeleteBlock).Methods(DELETE)
+
 	s.mux.Use(middleware.Logger)
 
-	s.mux.HandleFunc("/api/customers", s.handleSaveCustomer).Methods(POST)
-	s.mux.HandleFunc("/api/customers/token", s.handleGenerateToken).Methods(POST)
-	s.mux.HandleFunc("/api/customers/token/validate", s.handleValidateToken).Methods(POST)
+	customerAuthenticateMd := middleware.Authenticate(s.customersSvc.IDByToken)
+	customersSubrouter := s.mux.PathPrefix("/api/customers").Subrouter()
+	customersSubrouter.Use(customerAuthenticateMd)
 
-	s.mux.HandleFunc("/customers", s.handleGetAllCustomers).Methods(GET)
-	s.mux.HandleFunc("/customers/active", s.handleGetAllActive).Methods(GET)
-	s.mux.HandleFunc("/customers/{id:[0-9]+}", s.handleGetCustomerByID).Methods(GET)
-	s.mux.HandleFunc("/customers/{id:[0-9]+}/block", s.handlePostBlock).Methods(POST)
-	s.mux.HandleFunc("/customers/{id:[0-9]+}/block", s.handleDeleteBlock).Methods(DELETE)
-	s.mux.HandleFunc("/customers/{id:[0-9]+}", s.handleRemoveCustomerByID).Methods(DELETE)
+	customersSubrouter.HandleFunc("", s.handleCustomerRegistration).Methods(POST)
+	customersSubrouter.HandleFunc("/token", s.handleCustomerGetToken).Methods(POST)
+	customersSubrouter.HandleFunc("/products", s.handleCustomerGetProducts).Methods(GET)
+	customersSubrouter.HandleFunc("/purchases", s.handleCustomerGetPurchases).Methods(GET)
+	// customersSubrouter.HandleFunc("/purchases", s.handleCustomerMakePurchase).Methods(POST)
+
+
+	managerAuthenticateMd := middleware.Authenticate(s.managersSvc.IDByToken)
+	managersSubrouter := s.mux.PathPrefix("/api/managers").Subrouter()
+	managersSubrouter.Use(managerAuthenticateMd)
+
+	managersSubrouter.HandleFunc("", s.handleManagerRegistration).Methods(POST)
+	managersSubrouter.HandleFunc("/token", s.handleManagerGetToken).Methods(POST)
+	managersSubrouter.HandleFunc("/sales", s.handleManagerGetSales).Methods(GET)
+	managersSubrouter.HandleFunc("/sales", s.handleManagerMakeSale).Methods(POST)
+	managersSubrouter.HandleFunc("/products", s.handleManagerGetProducts).Methods(GET)
+	managersSubrouter.HandleFunc("/products", s.handleManagerChangeProduct).Methods(POST)
+	managersSubrouter.HandleFunc("/products/{id:[0-9]+}", s.handleManagerRemoveProductByID).Methods(DELETE)
+	managersSubrouter.HandleFunc("/customers", s.handleManagerGetCustomers).Methods(GET)
+	managersSubrouter.HandleFunc("/customers", s.handleManagerChangeCustomer).Methods(POST)
+	managersSubrouter.HandleFunc("/customers/{id:[0-9]+}", s.handleManagerRemoveCustomerByID).Methods(DELETE)
 
 }
 
