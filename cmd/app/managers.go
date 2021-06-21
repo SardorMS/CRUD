@@ -2,13 +2,11 @@ package app
 
 import (
 	"encoding/json"
-	"errors"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/SardorMS/CRUD/cmd/app/middleware"
-	"github.com/SardorMS/CRUD/pkg/managers"
 	"github.com/SardorMS/CRUD/pkg/types"
 	"github.com/gorilla/mux"
 )
@@ -192,9 +190,8 @@ func (s *Server) handleManagerChangeProduct(writer http.ResponseWriter, request 
 	respondJSON(writer, product)
 }
 
-
 // handleManagerRemoveProductByID - ...
-func (s *Server) handleRehandleManagerRemoveProductByIDmoveCustomerByID(writer http.ResponseWriter, request *http.Request) {
+func (s *Server) handleManagerRemoveProductByID(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
 		log.Println(err)
@@ -213,7 +210,7 @@ func (s *Server) handleRehandleManagerRemoveProductByIDmoveCustomerByID(writer h
 		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	
+
 	productID, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		log.Println(err)
@@ -221,13 +218,100 @@ func (s *Server) handleRehandleManagerRemoveProductByIDmoveCustomerByID(writer h
 		return
 	}
 
-	// НАЧНи ЗДЕСЬ
 	item, err := s.managersSvc.RemoveProductByID(request.Context(), productID)
-	if errors.Is(err, managers.ErrNotFound) {
-		http.Error(writer, http.StatusText(http.StatusNotFound), http.StatusInternalServerError)
+	if err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
+	respondJSON(writer, item)
+}
+
+// handleManagerGetCustomers - ...
+func (s *Server) handleManagerGetCustomers(writer http.ResponseWriter, request *http.Request) {
+	id, err := middleware.Authentication(request.Context())
+	if err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	if id == 0 {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusForbidden), http.StatusForbidden)
+		return
+	}
+	item, err := s.managersSvc.GetCustomer(request.Context())
+	if err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	respondJSON(writer, item)
+}
+
+// handleManagerChangeCustomer - ...
+func (s *Server) handleManagerChangeCustomer(writer http.ResponseWriter, request *http.Request) {
+	id, err := middleware.Authentication(request.Context())
+	if err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	if id == 0 {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusForbidden), http.StatusForbidden)
+		return
+	}
+
+	customer := &types.Customers{}
+	if err := json.NewDecoder(request.Body).Decode(&customer); err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	customer, err = s.managersSvc.ChangeCustomer(request.Context(), customer)
+	if err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+	respondJSON(writer, customer)
+}
+
+// handleManagerRemoveCustomerByID - ...
+func (s *Server) handleManagerRemoveCustomerByID(writer http.ResponseWriter, request *http.Request) {
+	id, err := middleware.Authentication(request.Context())
+	if err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	if id == 0 {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	idParam, ok := mux.Vars(request)["id"]
+	if !ok {
+		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	customerID, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	item, err := s.managersSvc.RemoveCustomerByID(request.Context(), customerID)
 	if err != nil {
 		log.Println(err)
 		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

@@ -80,4 +80,3 @@ func (s *Server) handleCustomerGetPurchases(writer http.ResponseWriter, request 
 
 	respondJSON(writer, items)
 }
-

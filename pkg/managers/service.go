@@ -281,3 +281,96 @@ func (s *Service) ChangeProduct(ctx context.Context, product *types.Products) (*
 	return product, nil
 
 }
+
+// RemoveProductByID - ...
+func (s *Service) RemoveProductByID(ctx context.Context, id int64) (*types.Products, error) {
+	item := &types.Products{}
+
+	sql := `DELETE FROM products WHERE id = $1 RETURNING id, name, price, qty, active, created;`
+	err := s.pool.QueryRow(ctx, sql, id).Scan(
+		&item.ID,
+		&item.Name,
+		&item.Price,
+		&item.Qty,
+		&item.Active,
+		&item.Created)
+
+	if err != nil {
+		log.Println(err)
+		return nil, ErrInternal
+	}
+	return item, nil
+}
+
+// GetCustomer - ...
+func (s *Service) GetCustomer(ctx context.Context) ([]*types.Customers, error) {
+	items := make([]*types.Customers, 0)
+	sql := `SELECT id, name, phone, active, created FROM customers 
+			WHERE active = true ORDER BY id LIMIT 500;`
+
+	rows, err := s.pool.Query(ctx, sql)
+
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return items, nil
+		}
+
+		return nil, ErrNotFound
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		item := &types.Customers{}
+		err = rows.Scan(
+			&item.ID,
+			&item.Name,
+			&item.Phone,
+			&item.Active,
+			&item.Created)
+
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		items = append(items, item)
+	}
+
+	return items, nil
+}
+
+// ChangeCustomer - ...
+func (s *Service) ChangeCustomer(ctx context.Context, customer *types.Customers) (*types.Customers, error) {
+
+	sql := `UPDATE customers SET name = $1, phone = $2, active = $3 WHERE id = $4 
+			RETURNING name, phone, active;`
+	err := s.pool.QueryRow(ctx, sql, customer.Name, customer.Phone, customer.Active, customer.ID).Scan(
+		&customer.Name,
+		&customer.Phone,
+		&customer.Active)
+
+	if err != nil {
+		log.Println(err)
+		return nil, ErrInternal
+	}
+
+	return customer, nil
+}
+
+// RemoveCustomerByID - ...
+func (s *Service) RemoveCustomerByID(ctx context.Context, id int64) (*types.Customers, error) {
+	item := &types.Customers{}
+
+	sql := `DELETE FROM customers WHERE id = $1 RETURNING id, name, phone, active, created;`
+	err := s.pool.QueryRow(ctx, sql, id).Scan(
+		&item.ID,
+		&item.Name,
+		&item.Phone,
+		&item.Active,
+		&item.Created)
+
+	if err != nil {
+		log.Println(err)
+		return nil, ErrInternal
+	}
+	return item, nil
+}

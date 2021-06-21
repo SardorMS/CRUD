@@ -46,7 +46,11 @@ type Sales struct {
 	Created time.Time `json:"created"`
 }
 
+
+//       
 //-------------------------------------------------------------------------//
+//
+
 
 // ManagerRegister - ...
 type ManagerRegister struct {
@@ -89,11 +93,21 @@ type SalePosition struct {
 	Created   time.Time `json:"created"`
 }
 
+// - Products - ...
 type Products struct {
 	ID      int64     `json:"id"`
 	Name    string    `json:"name"`
 	Price   int       `json:"price"`
 	Qty     int       `json:"qty"`
+	Active  bool      `json:"active"`
+	Created time.Time `json:"created"`
+}
+
+// Customeres - ...
+type Customers struct {
+	ID      int64     `json:"id"`
+	Name    string    `json:"name"`
+	Phone   string    `json:"phone"`
 	Active  bool      `json:"active"`
 	Created time.Time `json:"created"`
 }
