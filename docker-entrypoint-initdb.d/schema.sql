@@ -1,5 +1,5 @@
 --таблица зарегестрированных покупателей
-CREATE TABLE IF NOT EXIST customers
+CREATE TABLE IF NOT EXISTS customers
 (
     id       BIGSERIAL PRIMARY KEY,
     name     TEXT      NOT NULL,
@@ -10,12 +10,12 @@ CREATE TABLE IF NOT EXIST customers
 );
 
 --таблица сотрудников
-CREATE TABLE IF NOT EXIST managers 
+CREATE TABLE IF NOT EXISTS managers 
 (
     id         BIGSERIAL PRIMARY KEY,
     name       TEXT      NOT NULL,
     phone      TEXT      NOT NULL UNIQUE,
-    password   TEXT      NOT NULL,
+    password   TEXT,
     salary     INTEGER   NOT NULL DEFAULT 0,
     plan       INTEGER   NOT NULL DEFAULT 0 ,
     boss_id    BIGINT    REFERENCES managers,
@@ -26,25 +26,25 @@ CREATE TABLE IF NOT EXIST managers
 );
 
 --таблица токенов покупателей
-CREATE TABLE IF NOT EXIST customers_tokens 
+CREATE TABLE IF NOT EXISTS customers_tokens 
 (
-    token        TEXT      NOT NULL,
+    token        TEXT      NOT NULL UNIQUE,
     customer_id  BIGINT    NOT NULL REFERENCES customers,
     expire       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP + INTERVAL '1 hour',
     created      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 
 --таблица токенов сотрудников
-CREATE TABLE IF NOT EXIST managers_tokens 
+CREATE TABLE IF NOT EXISTS managers_tokens 
 (
-    token        TEXT      NOT NULL,
+    token        TEXT      NOT NULL UNIQUE,
     manager_id   BIGINT    NOT NULL REFERENCES managers,
     expire       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP + INTERVAL '1 hour',
     created      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 
 -- таблица товаров
-CREATE TABLE IF NOT EXIST products 
+CREATE TABLE IF NOT EXISTS products 
 (
     id      BIGSERIAL PRIMARY KEY,
     name    TEXT      NOT NULL,
@@ -56,21 +56,20 @@ CREATE TABLE IF NOT EXIST products
 
 
 --таблица продаж
-CREATE TABLE IF NOT EXIST sales
+CREATE TABLE IF NOT EXISTS sales
 (
     id          BIGSERIAL PRIMARY KEY,
     manager_id  BIGINT    NOT NULL REFERENCES managers,
-    customer_id BIGINT    REFERENCES customers,
+    customer_id BIGINT    NOT NULL,
     created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 --конкретные позиции в продаже (чек)
-CREATE TABLE IF NOT EXIST sale_positions
+CREATE TABLE IF NOT EXISTS sale_positions
 (
     id          BIGSERIAL PRIMARY KEY,
     sale_id     BIGINT    NOT NULL REFERENCES sales,
     product_id  BIGINT    NOT NULL REFERENCES products,
-    name        TEXT      NOT NULL,
     price       INTEGER   NOT NULL CHECK (price >= 0),
     qty         INTEGER   NOT NULL DEFAULT 0 CHECK (qty >= 0),
     created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -78,7 +77,7 @@ CREATE TABLE IF NOT EXIST sale_positions
 
 
 -- таблица юзеров (когда для хранения используется одна таблица)
-CREATE TABLE IF NOT EXIST users
+CREATE TABLE IF NOT EXISTS users
 (
     id       BIGSERIAL PRIMARY KEY,
     name     TEXT      NOT NULL,
@@ -95,6 +94,8 @@ CREATE TABLE IF NOT EXIST users
 
 --DROP TABLE products;
 --DROP TABLE managers;
+--DROP TABLE managers_tokens;
 --DROP TABLE customers;
+--DROP TABLE customers_tokens;
 --DROP TABLE sales;
 --DROP TABLE sale_positions;

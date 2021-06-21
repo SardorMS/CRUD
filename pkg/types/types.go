@@ -46,11 +46,9 @@ type Sales struct {
 	Created time.Time `json:"created"`
 }
 
-
-//       
+//
 //-------------------------------------------------------------------------//
 //
-
 
 // ManagerRegister - ...
 type ManagerRegister struct {
@@ -83,7 +81,7 @@ type Sale struct {
 	Positions  []*SalePosition `json:"positions"`
 }
 
-// SalePositions - ...
+// SalePosition - ...
 type SalePosition struct {
 	ID        int64     `json:"id"`
 	ProductID int64     `json:"product_id"`
@@ -103,7 +101,7 @@ type Products struct {
 	Created time.Time `json:"created"`
 }
 
-// Customeres - ...
+// Customers - ...
 type Customers struct {
 	ID      int64     `json:"id"`
 	Name    string    `json:"name"`

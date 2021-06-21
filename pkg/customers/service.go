@@ -109,14 +109,13 @@ func (s *Service) Register(ctx context.Context, registration *types.Registration
 
 	sql1 := `INSERT INTO customers (name, phone, password) 
 		VALUES ($1, $2, $3) ON CONFLICT (phone) DO NOTHING 
-		RETURNING id, name, phone, password, active, created;`
+		RETURNING id, name, phone, active, created;`
 	err = s.pool.QueryRow(ctx, sql1, registration.Name, registration.Phone, hash).Scan(
 		&item.ID,
 		&item.Name,
 		&item.Phone,
 		&item.Active,
-		&item.Created,
-	)
+		&item.Created)
 
 	if err == pgx.ErrNoRows {
 		log.Println(err)
@@ -173,15 +172,11 @@ func (s *Service) Purchases(ctx context.Context, id int64) ([]*types.Sales, erro
 	sql := `SELECT sp.id, sp.name, sp.price, sp.qty, sp.created 
 			FROM sale_positions sp
 			JOIN sales s ON s.id = sp.sale_id
-			WHERE s.customers_id = $1;
-			`
+			WHERE s.customer_id = $1;`
 	rows, err := s.pool.Query(ctx, sql, id)
 
-	if errors.Is(err, pgx.ErrNoRows) {
-		return items, nil
-	}
-
 	if err != nil {
+		log.Println(err)
 		return nil, ErrInternal
 	}
 	defer rows.Close()
@@ -210,4 +205,3 @@ func (s *Service) Purchases(ctx context.Context, id int64) ([]*types.Sales, erro
 
 	return items, nil
 }
-

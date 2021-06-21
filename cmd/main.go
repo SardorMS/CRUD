@@ -22,7 +22,7 @@ func main() {
 	host := "127.0.0.1"
 	port := "9999"
 	//user:login@host:port/db
-	dsn := "postgres://sardor:123@192.168.99.100:5432/db"
+	dsn := "postgres://app:123@192.168.99.100:5432/db"
 
 	if err := execute(host, port, dsn); err != nil {
 		log.Println(err)

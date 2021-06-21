@@ -3,7 +3,13 @@ package middleware
 import (
 	"context"
 	"errors"
+	"log"
 	"net/http"
+)
+
+const (
+	MANAGER = "MANAGER"
+	ADMIN   = "ADMIN"
 )
 
 var ErrNoAuthentication = errors.New("no authentication")
@@ -31,6 +37,7 @@ func Authenticate(idFunc IDFunc) func(http.Handler) http.Handler {
 
 			id, err := idFunc(request.Context(), token)
 			if err != nil {
+				log.Println(err, "Not Authorized")
 				http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 				return
 			}

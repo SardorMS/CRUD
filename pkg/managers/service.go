@@ -41,24 +41,25 @@ func NewService(pool *pgxpool.Pool) *Service {
 func (s *Service) IDByToken(ctx context.Context, token string) (int64, error) {
 
 	var id int64
-	sql := `SELECT manager_id FROM mangers_tokens WHERE token = $1;`
+	sql := `SELECT manager_id FROM managers_tokens WHERE token = $1;`
 	err := s.pool.QueryRow(ctx, sql, token).Scan(&id)
 
-	if err == pgx.ErrNoRows {
-		return 0, nil
-	}
-
 	if err != nil {
-		return 0, ErrInternal
+		log.Println(err)
+		if err == pgx.ErrNoRows {
+			return 0, nil
+		}
+		return 0, nil
 	}
 	return id, nil
 }
 
 // IsAdmin - ..
 func (s *Service) IsAdmin(ctx context.Context, id int64) (isAdmin bool) {
-	sql := `SELECT is_admin FROM managers where id = $1`
+	sql := `SELECT is_admin FROM managers WHERE id = $1`
 	err := s.pool.QueryRow(ctx, sql, id).Scan(&isAdmin)
 	if err != nil {
+		log.Println(err)
 		return false
 	}
 	return
@@ -71,8 +72,7 @@ func (s *Service) Register(ctx context.Context, item *types.Managers) (string, e
 	var id int64
 
 	sql1 := `INSERT INTO managers (name, phone, is_admin) 
-		VALUES ($1, $2, $3) ON CONFLICT (phone) DO NOTHING 
-		RETURNING id, name, phone, password, active, created;`
+		VALUES ($1, $2, $3) ON CONFLICT (phone) DO NOTHING RETURNING id;`
 	err := s.pool.QueryRow(ctx, sql1, item.Name, item.Phone, item.IsAdmin).Scan(&id)
 	if err != nil {
 		log.Print(err)
@@ -89,6 +89,7 @@ func (s *Service) Register(ctx context.Context, item *types.Managers) (string, e
 	sql2 := `INSERT INTO managers_tokens (token, manager_id) VALUES($1, $2);`
 	_, err = s.pool.Exec(ctx, sql2, token, id)
 	if err != nil {
+		log.Println(err)
 		return "", ErrInternal
 	}
 	return token, nil
@@ -156,7 +157,7 @@ func (s *Service) GetSales(ctx context.Context, id int64) (sum int, err error) {
 // MakeSales - ...
 func (s *Service) MakeSales(ctx context.Context, sale *types.Sale) (*types.Sale, error) {
 
-	positionSQL := "INSERT INTO sale_positions (id, product_id, qty, price) VALUES"
+	positionSQL := "INSERT INTO sale_positions (sale_id, product_id, qty, price) VALUES "
 
 	sql := `INSERT INTO sales (manager_id, customer_id) VALUES ($1, $2) RETURNING id, created;`
 	err := s.pool.QueryRow(ctx, sql, sale.ManagerID, sale.CustomerID).Scan(&sale.ID, &sale.Created)
@@ -168,7 +169,7 @@ func (s *Service) MakeSales(ctx context.Context, sale *types.Sale) (*types.Sale,
 
 	for _, position := range sale.Positions {
 		if !s.MakeSalePosition(ctx, position) {
-			log.Println("Invalid positions")
+			log.Println("Invalid position")
 			return nil, ErrInternal
 		}
 		positionSQL += "(" + strconv.FormatInt(sale.ID, 10) + "," +

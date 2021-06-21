@@ -1,17 +1,28 @@
-###                CUSTOMERS
+###--------------CUSTOMERS-------------------###
 
-###
+### Customer Registration
 POST http://127.0.0.1:9999/api/customers  HTTP/1.1
 Content-Type: application/json
 
-###
+{
+    "name": "masha",
+    "phone": "+998941112233",
+    "password": "123456"
+}
+
+### Token generation
 POST http://127.0.0.1:9999/api/customers/token  HTTP/1.1
 Content-Type: application/json
 
-###
+{
+    "login": "+998941112233",
+    "password": "123456"
+}
+
+### Get all active products
 GET http://127.0.0.1:9999/api/customers/products  HTTP/1.1
 
-###
+### Get active purchases
 GET http://127.0.0.1:9999/api/customers/purchases  HTTP/1.1
 
 
@@ -19,7 +30,18 @@ GET http://127.0.0.1:9999/api/customers/purchases  HTTP/1.1
 
 ###-----------------MANAGERS-----------------------###
 
-### REegistration
+### First Create Token if Manager Exists
+POST http://127.0.0.1:9999/api/managers/token  HTTP/1.1
+Authorization:<token>
+Content-Type: application/json
+
+{
+    "phone": "+992000000001",
+    "password": "secret"
+}
+
+
+### Registration
 POST http://127.0.0.1:9999/api/managers  HTTP/1.1
 Authorization:<token>
 Content-Type: application/json
@@ -31,16 +53,18 @@ Content-Type: application/json
     "roles": ["MANAGER", "ADMIN"]
 }
 
-
-
-###
-POST http://127.0.0.1:9999/api/managers/token  HTTP/1.1
+### Registration
+POST http://127.0.0.1:9999/api/managers  HTTP/1.1
 Authorization:<token>
 Content-Type: application/json
 
+{
+    "id": 0,
+    "name": "Petya",
+    "phone": "+992000000003",
+    "roles": ["MANAGER"]
+}
 
-### GET Sales
-GET http://127.0.0.1:9999/api/managers/sales  HTTP/1.1
 
 
 ### Make Sale
@@ -50,12 +74,15 @@ Content-Type: application/json
 
 {
     "id": 0,
-    "customer_id": "null | 0",
+    "customer_id": "null",
     "positions": [
         {"id": 0, "product_id": 1, "qty": 2, "price": 500},
         {"id": 0, "product_id": 2, "qty": 1, "price": 1000},
     ]
 }
+
+### GET Sales
+GET http://127.0.0.1:9999/api/managers/sales  HTTP/1.1
 
 
 ###

@@ -35,11 +35,11 @@ func (s *Server) handleManagerRegistration(writer http.ResponseWriter, request *
 		return
 	}
 
-	// if admin := s.managersSvc.IsAdmin(request.Context(), id); admin != true {
-	// 	log.Println(err)
-	// 	http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	// 	return
-	// }
+	if admin := s.managersSvc.IsAdmin(request.Context(), id); !admin {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 
 	items := &types.Managers{
 		ID:    item.ID,
