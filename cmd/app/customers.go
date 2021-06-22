@@ -9,7 +9,7 @@ import (
 	"github.com/SardorMS/CRUD/pkg/types"
 )
 
-// handleCustomerRegistration - ...
+// handleCustomerRegistration - registrate customers.
 func (s *Server) handleCustomerRegistration(writer http.ResponseWriter, request *http.Request) {
 	var item *types.Registration
 
@@ -29,7 +29,7 @@ func (s *Server) handleCustomerRegistration(writer http.ResponseWriter, request 
 	respondJSON(writer, saved)
 }
 
-//handleCustomerGetToken - ...
+// handleCustomerGetToken - generate token for registred customers.
 func (s *Server) handleCustomerGetToken(writer http.ResponseWriter, request *http.Request) {
 	var item *types.Auth
 
@@ -50,7 +50,7 @@ func (s *Server) handleCustomerGetToken(writer http.ResponseWriter, request *htt
 	respondJSON(writer, &types.Token{Token: token})
 }
 
-// - handleCustomerGetProducts - ...
+// handleCustomerGetProducts - get the products information.
 func (s *Server) handleCustomerGetProducts(writer http.ResponseWriter, request *http.Request) {
 	items, err := s.customersSvc.Products(request.Context())
 	if err != nil {
@@ -62,7 +62,7 @@ func (s *Server) handleCustomerGetProducts(writer http.ResponseWriter, request *
 	respondJSON(writer, items)
 }
 
-// handleCustomerGetPurchases - ...
+// handleCustomerGetPurchases - get the purchases information.
 func (s *Server) handleCustomerGetPurchases(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -79,4 +79,32 @@ func (s *Server) handleCustomerGetPurchases(writer http.ResponseWriter, request 
 	}
 
 	respondJSON(writer, items)
+}
+
+// handleCustomerMakePurchase - makes a purchase.
+func (s *Server) handleCustomerMakePurchase(writer http.ResponseWriter, request *http.Request) {
+
+	var item *types.Sales
+
+	if err := json.NewDecoder(request.Body).Decode(&item); err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	purchase, err := s.customersSvc.MakePurchase(request.Context(), item)
+	if err != nil {
+		log.Println(err)
+		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	respondJSON(writer, purchase)
+
+
+
+
+
+
+	
 }

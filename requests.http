@@ -85,11 +85,11 @@ Content-Type: application/json
 GET http://127.0.0.1:9999/api/managers/sales  HTTP/1.1
 
 
-###
+### Get Product
 GET http://127.0.0.1:9999/api/managers/products  HTTP/1.1
 
 
-###
+### Change product
 POST http://127.0.0.1:9999/api/managers/products  HTTP/1.1
 Authorization:<token>
 Content-Type: application/json
@@ -101,22 +101,23 @@ Content-Type: application/json
     "price": 500000
 }
 
-###
+### Delete product
 DELETE http://127.0.0.1:9999/api/managers/products/1  HTTP/1.1
 Authorization:<token>
 Content-Type: application/json
 
 
-###
+
+### Get Customers
 GET http://127.0.0.1:9999/api/managers/customers HTTP/1.1
 
 
-###
+### Change customers
 POST http://127.0.0.1:9999/api/managers/customers HTTP/1.1
 Authorization:<token>
 Content-Type: application/json
 
-###
+### Delete customers
 DELETE http://127.0.0.1:9999/api/managers/customers/1 HTTP/1.1
 Authorization:<token>
 Content-Type: application/json

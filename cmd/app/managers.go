@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// handleManagerRegistration - ...
+// handleManagerRegistration - registrate managers.
 func (s *Server) handleManagerRegistration(writer http.ResponseWriter, request *http.Request) {
 
 	var item *types.ManagerRegister
@@ -63,7 +63,7 @@ func (s *Server) handleManagerRegistration(writer http.ResponseWriter, request *
 	respondJSON(writer, map[string]interface{}{"token": token})
 }
 
-// handleManagerGetToken - ...
+// handleManagerGetToken - generate token for registred managers.
 func (s *Server) handleManagerGetToken(writer http.ResponseWriter, request *http.Request) {
 	var item *types.Managers
 
@@ -83,7 +83,7 @@ func (s *Server) handleManagerGetToken(writer http.ResponseWriter, request *http
 	respondJSON(writer, map[string]interface{}{"token": token})
 }
 
-// handleManagerGetSales - ...
+// handleManagerGetSales - get the sales information by manager.
 func (s *Server) handleManagerGetSales(writer http.ResponseWriter, request *http.Request) {
 
 	id, err := middleware.Authentication(request.Context())
@@ -109,7 +109,7 @@ func (s *Server) handleManagerGetSales(writer http.ResponseWriter, request *http
 	respondJSON(writer, map[string]interface{}{"manager_id": id, "total": total})
 }
 
-// handleManagerMakeSale - ...
+// handleManagerMakeSale - make sale by manager.
 func (s *Server) handleManagerMakeSale(writer http.ResponseWriter, request *http.Request) {
 
 	id, err := middleware.Authentication(request.Context())
@@ -144,7 +144,7 @@ func (s *Server) handleManagerMakeSale(writer http.ResponseWriter, request *http
 	respondJSON(writer, sale)
 }
 
-// handleManagerGetProducts - ...
+// handleManagerGetProducts - get the products information by manager.
 func (s *Server) handleManagerGetProducts(writer http.ResponseWriter, request *http.Request) {
 
 	items, err := s.managersSvc.Products(request.Context())
@@ -157,7 +157,7 @@ func (s *Server) handleManagerGetProducts(writer http.ResponseWriter, request *h
 	respondJSON(writer, items)
 }
 
-// handleManagerChangeProduct - ...
+// handleManagerChangeProduct - change products information by manager.
 func (s *Server) handleManagerChangeProduct(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -190,7 +190,7 @@ func (s *Server) handleManagerChangeProduct(writer http.ResponseWriter, request 
 	respondJSON(writer, product)
 }
 
-// handleManagerRemoveProductByID - ...
+// handleManagerRemoveProductByID - remove products by ID (manager).
 func (s *Server) handleManagerRemoveProductByID(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -228,7 +228,7 @@ func (s *Server) handleManagerRemoveProductByID(writer http.ResponseWriter, requ
 	respondJSON(writer, item)
 }
 
-// handleManagerGetCustomers - ...
+// handleManagerGetCustomers - get the customers information by manager.
 func (s *Server) handleManagerGetCustomers(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -252,7 +252,7 @@ func (s *Server) handleManagerGetCustomers(writer http.ResponseWriter, request *
 	respondJSON(writer, item)
 }
 
-// handleManagerChangeCustomer - ...
+// handleManagerChangeCustomer - changer customers information by manager.
 func (s *Server) handleManagerChangeCustomer(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -283,7 +283,7 @@ func (s *Server) handleManagerChangeCustomer(writer http.ResponseWriter, request
 	respondJSON(writer, customer)
 }
 
-// handleManagerRemoveCustomerByID - ...
+// handleManagerRemoveCustomerByID - remove customers information by id (manager).
 func (s *Server) handleManagerRemoveCustomerByID(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {

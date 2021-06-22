@@ -15,11 +15,11 @@ import (
 )
 
 var (
-	ErrInternal        = errors.New("internal error") //return when an internal error occurred
+	ErrInternal        = errors.New("internal error") 
 	ErrNoSuchUser      = errors.New("no such user")
 	ErrPhoneUsed       = errors.New("phone already registred")
 	ErrInvalidPassword = errors.New("invalid password")
-	ErrTokenNotFound   = errors.New("token not found") //retrun when customer not found
+	ErrTokenNotFound   = errors.New("token not found")
 	ErrTokenExpired    = errors.New("token expired")
 	ErrNotFound        = errors.New("not found")
 )

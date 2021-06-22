@@ -14,11 +14,10 @@ const (
 
 var ErrNoAuthentication = errors.New("no authentication")
 
-//Переменную этого типа, которая и будет ключом по которому будет
-//класться значение
+// A variable that will be the key by which the value will be added.
 var authenticationContextKey = &contextKey{"authentication context"}
 
-// Неэкспортируемый тип
+// Non-exportable type.
 type contextKey struct {
 	name string
 }
@@ -29,7 +28,7 @@ func (c *contextKey) String() string {
 
 type IDFunc func(ctx context.Context, token string) (int64, error)
 
-// Authenticate - ...
+// Authenticate - authentication procedure
 func Authenticate(idFunc IDFunc) func(http.Handler) http.Handler {
 	return func(handler http.Handler) http.Handler {
 		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -42,7 +41,7 @@ func Authenticate(idFunc IDFunc) func(http.Handler) http.Handler {
 				return
 			}
 
-			// Кладём по этому ключу значение
+			// give a value by a key.
 			ctx := context.WithValue(request.Context(), authenticationContextKey, id)
 			request = request.WithContext(ctx)
 
@@ -51,7 +50,7 @@ func Authenticate(idFunc IDFunc) func(http.Handler) http.Handler {
 	}
 }
 
-// Athuntecation - функцию helper*, чтобы доставать значение из контекста
+// Athuntecation - helper function, to extract value from context.
 func Authentication(ctx context.Context) (int64, error) {
 	if value, ok := ctx.Value(authenticationContextKey).(int64); ok {
 		return value, nil

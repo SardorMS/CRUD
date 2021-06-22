@@ -51,18 +51,18 @@ func (s *Server) Init() {
 	customersSubrouter.HandleFunc("/token", s.handleCustomerGetToken).Methods(POST)
 	customersSubrouter.HandleFunc("/products", s.handleCustomerGetProducts).Methods(GET)
 	customersSubrouter.HandleFunc("/purchases", s.handleCustomerGetPurchases).Methods(GET)
-	// customersSubrouter.HandleFunc("/purchases", s.handleCustomerMakePurchase).Methods(POST)
+	customersSubrouter.HandleFunc("/purchases", s.handleCustomerMakePurchase).Methods(POST)
 
 	managerAuthenticateMd := middleware.Authenticate(s.managersSvc.IDByToken)
 	managersSubrouter := s.mux.PathPrefix("/api/managers").Subrouter()
 	managersSubrouter.Use(managerAuthenticateMd)
 
-	managersSubrouter.HandleFunc("", s.handleManagerRegistration).Methods(POST) // right
-	managersSubrouter.HandleFunc("/token", s.handleManagerGetToken).Methods(POST) //right
-	managersSubrouter.HandleFunc("/sales", s.handleManagerGetSales).Methods(GET) //right
-	managersSubrouter.HandleFunc("/sales", s.handleManagerMakeSale).Methods(POST) //right
+	managersSubrouter.HandleFunc("", s.handleManagerRegistration).Methods(POST)
+	managersSubrouter.HandleFunc("/token", s.handleManagerGetToken).Methods(POST) 
+	managersSubrouter.HandleFunc("/sales", s.handleManagerGetSales).Methods(GET) 
+	managersSubrouter.HandleFunc("/sales", s.handleManagerMakeSale).Methods(POST) 
 	managersSubrouter.HandleFunc("/products", s.handleManagerGetProducts).Methods(GET)
-	managersSubrouter.HandleFunc("/products", s.handleManagerChangeProduct).Methods(POST) //right
+	managersSubrouter.HandleFunc("/products", s.handleManagerChangeProduct).Methods(POST) 
 	managersSubrouter.HandleFunc("/products/{id:[0-9]+}", s.handleManagerRemoveProductByID).Methods(DELETE)
 	managersSubrouter.HandleFunc("/customers", s.handleManagerGetCustomers).Methods(GET)
 	managersSubrouter.HandleFunc("/customers", s.handleManagerChangeCustomer).Methods(POST)

@@ -15,13 +15,13 @@ import (
 )
 
 var (
-	ErrInternal        = errors.New("internal error") //return when an internal error occurred
-	ErrNoSuchUser      = errors.New("no such user")
-	ErrPhoneUsed       = errors.New("phone already registred")
-	ErrInvalidPassword = errors.New("invalid password")
-	ErrTokenNotFound   = errors.New("token not found") //retrun when customer not found
-	ErrTokenExpired    = errors.New("token expired")
-	ErrNotFound        = errors.New("not found")
+	ErrInternal        = errors.New("internal error")          //return when an internal error occurred.
+	ErrNoSuchUser      = errors.New("no such user")            //return no such user.
+	ErrPhoneUsed       = errors.New("phone already registred") //retunr error if phone is already registred.
+	ErrInvalidPassword = errors.New("invalid password")        //return invalid password.
+	ErrTokenNotFound   = errors.New("token not found")         //retrun when token not found.
+	ErrTokenExpired    = errors.New("token expired")           //return when token expired
+	ErrNotFound        = errors.New("not found")               // return not found
 )
 
 //Service - describes customer service.
@@ -95,7 +95,7 @@ func (s *Service) Token(ctx context.Context, phone string, password string,
 	return token, nil
 }
 
-// Register - ...
+// Register - customers register procedure.
 func (s *Service) Register(ctx context.Context, registration *types.Registration) (*types.Customer, error) {
 
 	var err error
@@ -128,7 +128,7 @@ func (s *Service) Register(ctx context.Context, registration *types.Registration
 	return item, nil
 }
 
-// Products - ...
+// Products - shows product information by customer.
 func (s *Service) Products(ctx context.Context) ([]*types.Product, error) {
 
 	items := make([]*types.Product, 0)
@@ -164,7 +164,7 @@ func (s *Service) Products(ctx context.Context) ([]*types.Product, error) {
 	return items, nil
 }
 
-//Purchases -
+//Purchases - get the purchase information.
 func (s *Service) Purchases(ctx context.Context, id int64) ([]*types.Sales, error) {
 
 	items := make([]*types.Sales, 0)
@@ -204,4 +204,22 @@ func (s *Service) Purchases(ctx context.Context, id int64) ([]*types.Sales, erro
 	}
 
 	return items, nil
+}
+
+// MakePurchase - make a purchase.
+func (s *Service) MakePurchase(ctx context.Context, purchase *types.Sales) (*types.Sales, error) {
+
+	item := &types.Sales{}
+	sql := `INSERT INTO sale_positions (sale_id, qty, price) VALUES($1, $2, $3);`
+	err := s.pool.QueryRow(ctx, sql, purchase.ID, purchase.Qty, purchase.Price).Scan(
+		&purchase.ID,
+		&item.Qty,
+		&item.Price)
+
+	if err != nil {
+		log.Println(err)
+		return nil, ErrInternal
+	}
+	return item, nil
+
 }
