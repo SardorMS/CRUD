@@ -34,10 +34,8 @@ func NewService(pool *pgxpool.Pool) *Service {
 	return &Service{pool: pool}
 }
 
-// IDByToken - performs the users authentication procedure,
+// IDByToken - performs the customer authentication procedure,
 // if successfull returns its id.
-// Returns ErrNoSuchUser if user is not found.
-// Returns ErrInternal if another error occurs.
 func (s *Service) IDByToken(ctx context.Context, token string) (int64, error) {
 
 	var id int64
@@ -54,12 +52,8 @@ func (s *Service) IDByToken(ctx context.Context, token string) (int64, error) {
 	return id, nil
 }
 
-//Tokern - generates a token for user.
-// Returns ErrNoSuchUser if user is not found.
-// Returns ErrInvalidPassword if password incorrect.
-// Returns ErrInternal if another error occurs.
-func (s *Service) Token(ctx context.Context, phone string, password string,
-) (token string, err error) {
+//Tokern - generates a token for customer.
+func (s *Service) Token(ctx context.Context, phone string, password string) (token string, err error) {
 
 	var id int64
 	var hash string
@@ -128,7 +122,7 @@ func (s *Service) Register(ctx context.Context, registration *types.Registration
 	return item, nil
 }
 
-// Products - shows product information by customer.
+// Products - shows information about products to customers.
 func (s *Service) Products(ctx context.Context) ([]*types.Product, error) {
 
 	items := make([]*types.Product, 0)

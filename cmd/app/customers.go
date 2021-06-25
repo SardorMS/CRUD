@@ -50,7 +50,7 @@ func (s *Server) handleCustomerGetToken(writer http.ResponseWriter, request *htt
 	respondJSON(writer, &types.Token{Token: token})
 }
 
-// handleCustomerGetProducts - get the products information.
+// handleCustomerGetProducts - gets information about products.
 func (s *Server) handleCustomerGetProducts(writer http.ResponseWriter, request *http.Request) {
 	items, err := s.customersSvc.Products(request.Context())
 	if err != nil {
@@ -62,7 +62,7 @@ func (s *Server) handleCustomerGetProducts(writer http.ResponseWriter, request *
 	respondJSON(writer, items)
 }
 
-// handleCustomerGetPurchases - get the purchases information.
+// handleCustomerGetPurchases - gets information about purchases.
 func (s *Server) handleCustomerGetPurchases(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {

@@ -1,4 +1,4 @@
---таблица зарегестрированных покупателей
+-- Table of registred customers.
 CREATE TABLE IF NOT EXISTS customers
 (
     id       BIGSERIAL PRIMARY KEY,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS customers
     created  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
---таблица сотрудников
+-- Table of managers.
 CREATE TABLE IF NOT EXISTS managers 
 (
     id         BIGSERIAL PRIMARY KEY,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS managers
     created    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
---таблица токенов покупателей
+-- Table of customers tokens.
 CREATE TABLE IF NOT EXISTS customers_tokens 
 (
     token        TEXT      NOT NULL UNIQUE,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS customers_tokens
     created      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 
---таблица токенов сотрудников
+-- Table of managers tokens.
 CREATE TABLE IF NOT EXISTS managers_tokens 
 (
     token        TEXT      NOT NULL UNIQUE,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS managers_tokens
     created      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 
--- таблица товаров
+-- Table of products.
 CREATE TABLE IF NOT EXISTS products 
 (
     id      BIGSERIAL PRIMARY KEY,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS products
 );
 
 
---таблица продаж
+-- Table of sales.
 CREATE TABLE IF NOT EXISTS sales
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS sales
     created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
---конкретные позиции в продаже (чек)
+-- Table about sales positions (cheque).
 CREATE TABLE IF NOT EXISTS sale_positions
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS sale_positions
 );
 
 
--- таблица юзеров (когда для хранения используется одна таблица)
+-- Table of users (when a single table is used for storage).
 CREATE TABLE IF NOT EXISTS users
 (
     id       BIGSERIAL PRIMARY KEY,
@@ -91,7 +91,6 @@ CREATE TABLE IF NOT EXISTS users
 
 
 --DROP TABLE <name_of_table> CASCADE
-
 --DROP TABLE products;
 --DROP TABLE managers;
 --DROP TABLE managers_tokens;

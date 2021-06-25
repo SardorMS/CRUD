@@ -15,16 +15,16 @@ import (
 )
 
 var (
-	ErrInternal        = errors.New("internal error") 
-	ErrNoSuchUser      = errors.New("no such user")
-	ErrPhoneUsed       = errors.New("phone already registred")
-	ErrInvalidPassword = errors.New("invalid password")
-	ErrTokenNotFound   = errors.New("token not found")
-	ErrTokenExpired    = errors.New("token expired")
-	ErrNotFound        = errors.New("not found")
+	ErrInternal        = errors.New("internal error")          //return when an internal error occurred.
+	ErrNoSuchUser      = errors.New("no such user")            //return no such user.
+	ErrPhoneUsed       = errors.New("phone already registred") //retunr error if phone is already registred.
+	ErrInvalidPassword = errors.New("invalid password")        //return invalid password.
+	ErrTokenNotFound   = errors.New("token not found")         //retrun when token not found.
+	ErrTokenExpired    = errors.New("token expired")           //return when token expired
+	ErrNotFound        = errors.New("not found")               // return not found
 )
 
-//Service - describes customer service.
+//Service - describes managers service.
 type Service struct {
 	pool *pgxpool.Pool
 }
@@ -36,8 +36,6 @@ func NewService(pool *pgxpool.Pool) *Service {
 
 // IDByToken - performs the users authentication procedure,
 // if successfull returns its id.
-// Returns ErrNoSuchUser if user is not found.
-// Returns ErrInternal if another error occurs.
 func (s *Service) IDByToken(ctx context.Context, token string) (int64, error) {
 
 	var id int64
@@ -96,11 +94,7 @@ func (s *Service) Register(ctx context.Context, item *types.Managers) (string, e
 }
 
 // Tokern - generates a token for user.
-// Returns ErrNoSuchUser if user is not found.
-// Returns ErrInvalidPassword if password incorrect.
-// Returns ErrInternal if another error occurs.
-func (s *Service) Token(ctx context.Context, phone string, password string,
-) (token string, err error) {
+func (s *Service) Token(ctx context.Context, phone string, password string) (token string, err error) {
 
 	var id int64
 	var hash string

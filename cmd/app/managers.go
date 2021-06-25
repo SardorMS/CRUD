@@ -83,7 +83,7 @@ func (s *Server) handleManagerGetToken(writer http.ResponseWriter, request *http
 	respondJSON(writer, map[string]interface{}{"token": token})
 }
 
-// handleManagerGetSales - get the sales information by manager.
+// handleManagerGetSales - gets information about sales.
 func (s *Server) handleManagerGetSales(writer http.ResponseWriter, request *http.Request) {
 
 	id, err := middleware.Authentication(request.Context())
@@ -109,7 +109,7 @@ func (s *Server) handleManagerGetSales(writer http.ResponseWriter, request *http
 	respondJSON(writer, map[string]interface{}{"manager_id": id, "total": total})
 }
 
-// handleManagerMakeSale - make sale by manager.
+// handleManagerMakeSale - makes sale.
 func (s *Server) handleManagerMakeSale(writer http.ResponseWriter, request *http.Request) {
 
 	id, err := middleware.Authentication(request.Context())
@@ -144,7 +144,7 @@ func (s *Server) handleManagerMakeSale(writer http.ResponseWriter, request *http
 	respondJSON(writer, sale)
 }
 
-// handleManagerGetProducts - get the products information by manager.
+// handleManagerGetProducts - gets information about products.
 func (s *Server) handleManagerGetProducts(writer http.ResponseWriter, request *http.Request) {
 
 	items, err := s.managersSvc.Products(request.Context())
@@ -157,7 +157,7 @@ func (s *Server) handleManagerGetProducts(writer http.ResponseWriter, request *h
 	respondJSON(writer, items)
 }
 
-// handleManagerChangeProduct - change products information by manager.
+// handleManagerChangeProduct - change product information.
 func (s *Server) handleManagerChangeProduct(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -190,7 +190,7 @@ func (s *Server) handleManagerChangeProduct(writer http.ResponseWriter, request 
 	respondJSON(writer, product)
 }
 
-// handleManagerRemoveProductByID - remove products by ID (manager).
+// handleManagerRemoveProductByID - removes product information by ID (manager).
 func (s *Server) handleManagerRemoveProductByID(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -228,7 +228,7 @@ func (s *Server) handleManagerRemoveProductByID(writer http.ResponseWriter, requ
 	respondJSON(writer, item)
 }
 
-// handleManagerGetCustomers - get the customers information by manager.
+// handleManagerGetCustomers - gets information about customers.
 func (s *Server) handleManagerGetCustomers(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -252,7 +252,7 @@ func (s *Server) handleManagerGetCustomers(writer http.ResponseWriter, request *
 	respondJSON(writer, item)
 }
 
-// handleManagerChangeCustomer - changer customers information by manager.
+// handleManagerChangeCustomer - changes information about customer.
 func (s *Server) handleManagerChangeCustomer(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {
@@ -283,7 +283,7 @@ func (s *Server) handleManagerChangeCustomer(writer http.ResponseWriter, request
 	respondJSON(writer, customer)
 }
 
-// handleManagerRemoveCustomerByID - remove customers information by id (manager).
+// handleManagerRemoveCustomerByID - remove information  about customer by id (manager).
 func (s *Server) handleManagerRemoveCustomerByID(writer http.ResponseWriter, request *http.Request) {
 	id, err := middleware.Authentication(request.Context())
 	if err != nil {

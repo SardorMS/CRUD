@@ -2,7 +2,8 @@ package types
 
 import "time"
 
-// Customer - represents information about customer.
+//-----------------------------Customers-----------------------//
+
 type Customer struct {
 	ID      int64     `json:"id"`
 	Name    string    `json:"name"`
@@ -47,7 +48,7 @@ type Sales struct {
 }
 
 //
-//-------------------------------------------------------------------------//
+//--------------------------Managers-------------------------//
 //
 
 // ManagerRegister - ...

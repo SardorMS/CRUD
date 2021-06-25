@@ -41,22 +41,27 @@ func (s *Server) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 // Init - initializes the server (register all handlers).
 func (s *Server) Init() {
 
+	// Use Logger middleware.
 	s.mux.Use(middleware.Logger)
-
+	
+	// Authenticate customers routes by token and create prefix /api/customers.
 	customerAuthenticateMd := middleware.Authenticate(s.customersSvc.IDByToken)
 	customersSubrouter := s.mux.PathPrefix("/api/customers").Subrouter()
 	customersSubrouter.Use(customerAuthenticateMd)
 
+	// Customers routes - path handlers (sub routes).
 	customersSubrouter.HandleFunc("", s.handleCustomerRegistration).Methods(POST)
 	customersSubrouter.HandleFunc("/token", s.handleCustomerGetToken).Methods(POST)
 	customersSubrouter.HandleFunc("/products", s.handleCustomerGetProducts).Methods(GET)
 	customersSubrouter.HandleFunc("/purchases", s.handleCustomerGetPurchases).Methods(GET)
 	customersSubrouter.HandleFunc("/purchases", s.handleCustomerMakePurchase).Methods(POST)
 
+	// Authenticate customers routes by token and create prefix /api/customers.
 	managerAuthenticateMd := middleware.Authenticate(s.managersSvc.IDByToken)
 	managersSubrouter := s.mux.PathPrefix("/api/managers").Subrouter()
 	managersSubrouter.Use(managerAuthenticateMd)
 
+	// Managers routes - path handlers (sub routes).
 	managersSubrouter.HandleFunc("", s.handleManagerRegistration).Methods(POST)
 	managersSubrouter.HandleFunc("/token", s.handleManagerGetToken).Methods(POST) 
 	managersSubrouter.HandleFunc("/sales", s.handleManagerGetSales).Methods(GET) 
