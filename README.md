@@ -2,10 +2,6 @@
 
 This is the first version of code. It's a Go web application called "CRUD" that lets users makes a crud actions (similar to online shop).
 
-<! --
-<img width="500" src="./screenshot.png" />
--->
-
 ### Features
 
 - Authentication. Customers and managers can register and sign in.
