@@ -52,7 +52,7 @@ func (s *Service) IDByToken(ctx context.Context, token string) (int64, error) {
 	return id, nil
 }
 
-// IsAdmin - ..
+// IsAdmin - managers role check.
 func (s *Service) IsAdmin(ctx context.Context, id int64) (isAdmin bool) {
 	sql := `SELECT is_admin FROM managers WHERE id = $1`
 	err := s.pool.QueryRow(ctx, sql, id).Scan(&isAdmin)
@@ -63,7 +63,7 @@ func (s *Service) IsAdmin(ctx context.Context, id int64) (isAdmin bool) {
 	return
 }
 
-// Register - ...
+// Register - managers register procedure.
 func (s *Service) Register(ctx context.Context, item *types.Managers) (string, error) {
 
 	var token string
@@ -93,7 +93,7 @@ func (s *Service) Register(ctx context.Context, item *types.Managers) (string, e
 	return token, nil
 }
 
-// Tokern - generates a token for user.
+// Tokern - generates a token for managers.
 func (s *Service) Token(ctx context.Context, phone string, password string) (token string, err error) {
 
 	var id int64
@@ -130,7 +130,7 @@ func (s *Service) Token(ctx context.Context, phone string, password string) (tok
 	return token, nil
 }
 
-// GetSales - ...
+// GetSales - get the sales information.
 func (s *Service) GetSales(ctx context.Context, id int64) (sum int, err error) {
 
 	sql := `SELECT COALESCE (SUM (sp.price * sp.qty), 0) total
@@ -148,7 +148,7 @@ func (s *Service) GetSales(ctx context.Context, id int64) (sum int, err error) {
 	return sum, nil
 }
 
-// MakeSales - ...
+// MakeSales - makes a sale.
 func (s *Service) MakeSales(ctx context.Context, sale *types.Sale) (*types.Sale, error) {
 
 	positionSQL := "INSERT INTO sale_positions (sale_id, product_id, qty, price) VALUES "
@@ -183,7 +183,7 @@ func (s *Service) MakeSales(ctx context.Context, sale *types.Sale) (*types.Sale,
 	return sale, nil
 }
 
-// MakeSalePosition - ...
+// MakeSalePosition - updates a products information.
 func (s *Service) MakeSalePosition(ctx context.Context, position *types.SalePosition) bool {
 	active := false
 	qty := 0
@@ -205,7 +205,7 @@ func (s *Service) MakeSalePosition(ctx context.Context, position *types.SalePosi
 	return true
 }
 
-// Products - ...
+// Products - shows information about products to customers.
 func (s *Service) Products(ctx context.Context) ([]*types.Products, error) {
 
 	items := make([]*types.Products, 0)
@@ -241,7 +241,7 @@ func (s *Service) Products(ctx context.Context) ([]*types.Products, error) {
 	return items, nil
 }
 
-// ChangeProduct(Save) - ...
+// ChangeProduct(Save) - change or save an information about products.
 func (s *Service) ChangeProduct(ctx context.Context, product *types.Products) (*types.Products, error) {
 
 	var err error
@@ -277,7 +277,7 @@ func (s *Service) ChangeProduct(ctx context.Context, product *types.Products) (*
 
 }
 
-// RemoveProductByID - ...
+// RemoveProductByID - remove information about products.
 func (s *Service) RemoveProductByID(ctx context.Context, id int64) (*types.Products, error) {
 	item := &types.Products{}
 
@@ -297,7 +297,7 @@ func (s *Service) RemoveProductByID(ctx context.Context, id int64) (*types.Produ
 	return item, nil
 }
 
-// GetCustomer - ...
+// GetCustomer -  shows information about customers.
 func (s *Service) GetCustomer(ctx context.Context) ([]*types.Customers, error) {
 	items := make([]*types.Customers, 0)
 	sql := `SELECT id, name, phone, active, created FROM customers 
@@ -333,7 +333,7 @@ func (s *Service) GetCustomer(ctx context.Context) ([]*types.Customers, error) {
 	return items, nil
 }
 
-// ChangeCustomer - ...
+// ChangeCustomer - change information about customers.
 func (s *Service) ChangeCustomer(ctx context.Context, customer *types.Customers) (*types.Customers, error) {
 
 	sql := `UPDATE customers SET name = $1, phone = $2, active = $3 WHERE id = $4 
@@ -351,7 +351,7 @@ func (s *Service) ChangeCustomer(ctx context.Context, customer *types.Customers)
 	return customer, nil
 }
 
-// RemoveCustomerByID - ...
+// RemoveCustomerByID - remove information about the ucustomers ID.
 func (s *Service) RemoveCustomerByID(ctx context.Context, id int64) (*types.Customers, error) {
 	item := &types.Customers{}
 
