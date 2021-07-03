@@ -1,4 +1,4 @@
-# Full-stack Go
+# Create, Read, Update and Delete
 
 This is the first version of code. It's a Go web application called "CRUD" that lets users makes a crud actions (similar to online shop).
 
